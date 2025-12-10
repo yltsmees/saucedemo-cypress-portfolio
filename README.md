@@ -5,11 +5,34 @@ I use this project in my QA / test automation portfolio to show how I design and
 
 ---
 
+## 🔧 Quick start for reviewers
+
+To run the project locally:
+
+```bash
+git clone https://github.com/yltsmees/saucedemo-cypress-portfolio.git
+cd saucedemo-cypress-portfolio
+npm install
+
+# Open Cypress GUI
+npm run cy:open
+
+# Or run all tests headless
+npm run cy:run
+```
+
+Requirements:
+
+- Node.js 18+
+- Internet access (tests run against the live saucedemo.com site)
+
+---
+
 ## Tech stack
 
 - **Cypress** 15.x (JavaScript)
 - **Node.js** 18+ (tested locally on Windows)
-- **Page Object Model** for UI structure
+- **Page Object Model (POM)** for UI structure
 - **Fixtures** for test data (users, cart items)
 - **Custom Cypress commands** for common flows (for example `cy.loginStandard()`)
 
@@ -23,7 +46,7 @@ I use this project in my QA / test automation portfolio to show how I design and
 - Locked out user error
 - Wrong password and empty field validation
 - Session handling when accessing protected pages directly
-- Basic security behaviour of the password field
+- Basic security behaviour of the password field (password masking)
 
 ### Inventory (Products)
 
@@ -34,8 +57,9 @@ I use this project in my QA / test automation portfolio to show how I design and
   - Name Z → A
   - Price low → high
   - Price high → low
-- Navigation from list to product detail and back
+- Navigation from product list to product detail and back
 - Sort and state reset from the menu
+- Basic state persistence and reset behaviour
 
 ### Cart
 
@@ -44,15 +68,15 @@ I use this project in my QA / test automation portfolio to show how I design and
   - Product detail pages
 - Cart icon badge count
 - Cart page contents, quantities and prices
-- Continue Shopping flow
+- Continue Shopping flow back to Products
 
 ### Checkout
 
 - Required field validation (first name, last name, postal code)
 - Navigation through:
-  - Cart → Your Information
-  - Your Information → Overview
-  - Overview → Complete
+  - Cart → Checkout: Your Information
+  - Your Information → Checkout: Overview
+  - Overview → Checkout Complete
 - Item total equals sum of item prices
 - Total equals item total plus tax
 - Money values use two decimal places
@@ -64,12 +88,11 @@ I use this project in my QA / test automation portfolio to show how I design and
 - Price formatting uses `$` and two decimals
 - No username or password in URL or web storage
 - Basic cookie check for sensitive data
-- State behaviour on refresh and back navigation
-- Simple stability check for repeated sorting
+- State behaviour on refresh and back navigation in key flows
+- Simple stability check for repeated sorting actions
 
-Some tests document issues in the demo application and are marked as **EXPECTED BUG** in the test name.
-
-Test cases use IDs such as `SD_LOGIN_01`, `SD_INV_04`, `SD_CHECKOUT_07` to make it easy to link back to manual test design.
+Some tests document issues in the demo application and are marked as **EXPECTED BUG** in the test name.  
+Test cases use IDs such as `SD_LOGIN_01`, `SD_INV_04`, `SD_CHECKOUT_07` to map back to test design.
 
 ---
 
@@ -79,11 +102,23 @@ Test cases use IDs such as `SD_LOGIN_01`, `SD_INV_04`, `SD_CHECKOUT_07` to make 
 cypress/
   e2e/
     cart/
+      cart.cy.js
     checkout/
+      checkout.cy.js
     inventory/
+      inventory-navigation.cy.js
+      inventory-overview.cy.js
+      inventory-sorting.cy.js
+      inventory-state.cy.js
     login/
+      login-negative.cy.js
+      login-positive.cy.js
+      login-security.cy.js
+      login-session.cy.js
     menu/
+      menu.cy.js
     nonfunctional/
+      nonfunctional.cy.js
   fixtures/
     users.json
     cartItems.json
@@ -102,3 +137,64 @@ package.json            # dependencies and npm scripts
 .gitignore
 README.md
 ```
+
+Each folder under `cypress/e2e` focuses on one feature area to keep tests readable and easy to maintain.  
+Page Objects in `cypress/pages` encapsulate selectors and actions for each screen.
+
+---
+
+## How to run the tests (detailed)
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Open Cypress in GUI mode
+
+```bash
+npm run cy:open
+```
+
+This opens the Cypress Test Runner so you can:
+
+- Run specs one by one
+- Watch the tests execute in a real browser
+- Inspect DOM, network requests and console output
+
+### 3. Run the full suite in headless mode
+
+```bash
+npm run cy:run
+```
+
+This:
+
+- Runs all specs headless in Electron
+- Prints a summary of passed / failed tests in the terminal
+
+---
+
+## Notes about EXPECTED BUG tests
+
+Some tests are intentionally written to highlight issues or weaker behaviour in the SauceDemo site.  
+They include `EXPECTED BUG` in the test name, for example:
+
+- `SD_INV_01 - Products page shows 6 items with correct data (EXPECTED BUG)`
+- `SD_NONFUNC_06 - cookies must not expose username or password (EXPECTED BUG)`
+
+How to use them:
+
+- Keep them as normal `it(...)` tests to show that you actively look for and document defects, or
+- Change them to `it.skip(...)` if you prefer a fully green `npm run cy:run` by default.
+
+---
+
+## Possible future improvements
+
+Ideas that could be added on top of this project:
+
+- Simple GitHub Actions workflow that runs `npm ci` and `npm run cy:run` on each push
+- Small API test suite for SauceDemo using `cy.request` or Postman
+- Basic test plan or checklist linked from this repo (mapping test IDs to coverage)

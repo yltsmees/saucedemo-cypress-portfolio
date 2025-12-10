@@ -178,8 +178,7 @@ This:
 
 ## Notes about EXPECTED BUG tests
 
-Some tests are intentionally written to highlight issues or weaker behaviour in the SauceDemo site.  
-They include `EXPECTED BUG` in the test name, for example:
+Some tests are intentionally skipped because they cover known issues in the demo application. These are marked in the test name with `(EXPECTED BUG - SKIP IT)`.
 
 - `SD_INV_01 - Products page shows 6 items with correct data (EXPECTED BUG)`
 - `SD_NONFUNC_06 - cookies must not expose username or password (EXPECTED BUG)`

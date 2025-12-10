@@ -190,11 +190,3 @@ How to use them:
 - Change them to `it.skip(...)` if you prefer a fully green `npm run cy:run` by default.
 
 ---
-
-## Possible future improvements
-
-Ideas that could be added on top of this project:
-
-- Simple GitHub Actions workflow that runs `npm ci` and `npm run cy:run` on each push
-- Small API test suite for SauceDemo using `cy.request` or Postman
-- Basic test plan or checklist linked from this repo (mapping test IDs to coverage)
